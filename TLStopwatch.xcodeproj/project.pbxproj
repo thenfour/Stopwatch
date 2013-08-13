@@ -11,8 +11,11 @@
 		C3768D1917A696E60015EDA9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3768D1717A696E60015EDA9 /* InfoPlist.strings */; };
 		C3768D1B17A696E60015EDA9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C3768D1A17A696E60015EDA9 /* main.m */; };
 		C3768D1F17A696E60015EDA9 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = C3768D1D17A696E60015EDA9 /* Credits.rtf */; };
-		C3768D2217A696E60015EDA9 /* TLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C3768D2117A696E60015EDA9 /* TLAppDelegate.m */; };
-		C3768D2517A696E70015EDA9 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3768D2317A696E70015EDA9 /* MainMenu.xib */; };
+		C3768D2217A696E60015EDA9 /* MainMenuDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C3768D2117A696E60015EDA9 /* MainMenuDelegate.m */; };
+		C3768D2517A696E70015EDA9 /* StopwatchWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3768D2317A696E70015EDA9 /* StopwatchWindow.xib */; };
+		C3FB668E17B93AC700793934 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3FB668D17B93AC700793934 /* MainMenu.xib */; };
+		C3FB669117B9403400793934 /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FB669017B9403400793934 /* Utility.m */; };
+		C3FB669417B9431400793934 /* StopwatchWindowDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C3FB669317B9431400793934 /* StopwatchWindowDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,9 +29,14 @@
 		C3768D1A17A696E60015EDA9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C3768D1C17A696E60015EDA9 /* TLStopwatch-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TLStopwatch-Prefix.pch"; sourceTree = "<group>"; };
 		C3768D1E17A696E60015EDA9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		C3768D2017A696E60015EDA9 /* TLAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLAppDelegate.h; sourceTree = "<group>"; };
-		C3768D2117A696E60015EDA9 /* TLAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLAppDelegate.m; sourceTree = "<group>"; };
-		C3768D2417A696E70015EDA9 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		C3768D2017A696E60015EDA9 /* MainMenuDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainMenuDelegate.h; sourceTree = "<group>"; };
+		C3768D2117A696E60015EDA9 /* MainMenuDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainMenuDelegate.m; sourceTree = "<group>"; };
+		C3768D2417A696E70015EDA9 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/StopwatchWindow.xib; sourceTree = "<group>"; };
+		C3FB668D17B93AC700793934 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
+		C3FB668F17B9403400793934 /* Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utility.h; sourceTree = "<group>"; };
+		C3FB669017B9403400793934 /* Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utility.m; sourceTree = "<group>"; };
+		C3FB669217B9431400793934 /* StopwatchWindowDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StopwatchWindowDelegate.h; sourceTree = "<group>"; };
+		C3FB669317B9431400793934 /* StopwatchWindowDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StopwatchWindowDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,9 +90,14 @@
 		C3768D1417A696E60015EDA9 /* TLStopwatch */ = {
 			isa = PBXGroup;
 			children = (
-				C3768D2017A696E60015EDA9 /* TLAppDelegate.h */,
-				C3768D2117A696E60015EDA9 /* TLAppDelegate.m */,
-				C3768D2317A696E70015EDA9 /* MainMenu.xib */,
+				C3FB669217B9431400793934 /* StopwatchWindowDelegate.h */,
+				C3FB669317B9431400793934 /* StopwatchWindowDelegate.m */,
+				C3768D2317A696E70015EDA9 /* StopwatchWindow.xib */,
+				C3768D2017A696E60015EDA9 /* MainMenuDelegate.h */,
+				C3768D2117A696E60015EDA9 /* MainMenuDelegate.m */,
+				C3FB668D17B93AC700793934 /* MainMenu.xib */,
+				C3FB668F17B9403400793934 /* Utility.h */,
+				C3FB669017B9403400793934 /* Utility.m */,
 				C3768D1517A696E60015EDA9 /* Supporting Files */,
 			);
 			path = TLStopwatch;
@@ -156,7 +169,8 @@
 			files = (
 				C3768D1917A696E60015EDA9 /* InfoPlist.strings in Resources */,
 				C3768D1F17A696E60015EDA9 /* Credits.rtf in Resources */,
-				C3768D2517A696E70015EDA9 /* MainMenu.xib in Resources */,
+				C3768D2517A696E70015EDA9 /* StopwatchWindow.xib in Resources */,
+				C3FB668E17B93AC700793934 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,7 +182,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3768D1B17A696E60015EDA9 /* main.m in Sources */,
-				C3768D2217A696E60015EDA9 /* TLAppDelegate.m in Sources */,
+				C3768D2217A696E60015EDA9 /* MainMenuDelegate.m in Sources */,
+				C3FB669117B9403400793934 /* Utility.m in Sources */,
+				C3FB669417B9431400793934 /* StopwatchWindowDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,12 +207,12 @@
 			name = Credits.rtf;
 			sourceTree = "<group>";
 		};
-		C3768D2317A696E70015EDA9 /* MainMenu.xib */ = {
+		C3768D2317A696E70015EDA9 /* StopwatchWindow.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				C3768D2417A696E70015EDA9 /* en */,
 			);
-			name = MainMenu.xib;
+			name = StopwatchWindow.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -304,6 +320,7 @@
 				C3768D2A17A696E70015EDA9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
