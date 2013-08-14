@@ -6,7 +6,33 @@
 
 -(void)handleTimer:(NSTimer*)timer
 {
-	_currentTime.stringValue = [TLStopwatch timeIntervalToString:stopwatch.elapsed];
+	NSString* sHours;
+	NSString* sMinutes;
+	NSString* sSeconds;
+	NSString* sFraction;
+	
+	[TLStopwatch timeIntervalToString:stopwatch.elapsed hours:&sHours minutes:&sMinutes seconds:&sSeconds fraction:&sFraction];
+		
+	NSString* html = [NSString stringWithFormat:
+										@"<div style=\"text-align:center;font-family:Helvetica;font-weight:bold;font-size:36px;color:#%@;letter-spacing:2px;\">"
+										@"<span style=\"\">%@</span>"// hours
+										@"<span style=\"font-size:20px;color:#aaa;\">h</span>"
+										@"<span style=\"\">%@</span>"// minutes
+										@"<span style=\"font-size:20px;color:#aaa;\">m</span>"
+										@"<span style=\"\">%@</span>"// seconds
+										@"<span style=\"font-size:20px;color:#aaa;\">s</span>"
+										@"<span style=\"font-size:28px;color:#888;\">%@</span>"// fraction
+										@"</div>"
+										,
+										stopwatch.isRunning ? @"2b2" : @"bcd",
+										sHours,
+										sMinutes,
+										sSeconds,
+										sFraction];
+	[_currentTime setAttributedStringValue:[[NSAttributedString alloc] initWithHTML:[html dataUsingEncoding:NSUnicodeStringEncoding] documentAttributes:nil]];
+	
+	_progress.maxValue = [TLStopwatch stringToTimeInterval:_txtDestTime.stringValue];
+	_progress.doubleValue = stopwatch.elapsed;
 }
 
 -(void)windowDidLoad
@@ -18,25 +44,29 @@
 	NSLog(@"windowDidLoad on child nib; self = %p", self);
 	stopwatch = [TLStopwatch new];
 	[stopwatch start];
+
+//	[_progressIndicator setHidden:TRUE];
+	
+	[_randomText setFont:[NSFont fontWithName:@"Futura" size:19]];
+
 	[self updateState];
-	_progressIndicator.controlTint = NSGraphiteControlTint;
-
-}
-
--(void)updateState
-{
-	[_startStopButton setTitle:(stopwatch.isRunning ? @"Stop" : @"Start")];
-	_currentTime.stringValue = [TLStopwatch timeIntervalToString:stopwatch.elapsed];
-	timer = [NSTimer scheduledTimerWithTimeInterval: 0.08
+	
+	timer = [NSTimer scheduledTimerWithTimeInterval: 0.12
 																					 target: self
 																				 selector: @selector(handleTimer:)
 																				 userInfo: nil
 																					repeats: YES];
-	
+}
+
+-(void)updateState
+{
+	[_startStopButton setTitle:(stopwatch.isRunning ? @"Pause" : @"Go")];
+	/*
 	if(stopwatch.isRunning)
 		[_progressIndicator startAnimation:self];
 	else
 		[_progressIndicator stopAnimation:self];
+	*/
 }
 
 -(void)windowWillClose:(id)sender
@@ -86,6 +116,11 @@
 - (IBAction)userSetTimeAction:(NSTextField *)sender {
 	stopwatch.elapsed = [TLStopwatch stringToTimeInterval:_userEnteredTime.stringValue];
 	[self updateState];
+}
+
+- (IBAction)resetWasClicked:(id)sender
+{
+	stopwatch.elapsed = 0;
 }
 
 @end

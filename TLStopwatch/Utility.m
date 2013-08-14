@@ -22,6 +22,27 @@
 	return [NSString stringWithFormat:@"%02d:%02d.%02d.%02d", hours, minutes, seconds, fraction];
 }
 
++(void)timeIntervalToString:(NSTimeInterval)i hours:(NSString**)hours minutes:(NSString**)minutes seconds:(NSString**)seconds fraction:(NSString**)fraction
+{
+	const int fractionDecimalPlaces = 2;
+	
+	int hours_ = (int)(i / 3600);
+	int minutes_ = (int)((i - (hours_ * 3600)) / 60);
+	int seconds_ = (int)(i - (hours_ * 3600) - (minutes_ * 60));
+	int fraction_ = (int)(i * (int)pow(10,fractionDecimalPlaces)) % (int)pow(10,fractionDecimalPlaces);
+	
+	*hours = [NSString stringWithFormat:@"%02d", hours_];
+	*minutes = [NSString stringWithFormat:@"%02d", minutes_];
+	*seconds = [NSString stringWithFormat:@"%02d", seconds_];
+	
+	NSString* fractionFormatString = [NSString stringWithFormat:@"%%0%dd", fractionDecimalPlaces];
+	
+	*fraction = [NSString stringWithFormat:fractionFormatString, fraction_];
+	
+	//return [NSString stringWithFormat:@"%02d:%02d.%02d.%02d", hours, minutes, seconds, fraction];
+}
+
+
 +(NSTimeInterval)stringToTimeInterval:(NSString*)__inp
 {
 	NSString* inp = [__inp copy];

@@ -195,6 +195,15 @@
 									<reference key="NSOnImage" ref="89781954"/>
 									<reference key="NSMixedImage" ref="819035166"/>
 								</object>
+								<object class="NSMenuItem" id="585557057">
+									<reference key="NSMenu" ref="215431025"/>
+									<string key="NSTitle">Close</string>
+									<string key="NSKeyEquiv">,</string>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="89781954"/>
+									<reference key="NSMixedImage" ref="819035166"/>
+								</object>
 								<object class="NSMenuItem" id="802368047">
 									<reference key="NSMenu" ref="215431025"/>
 									<string key="NSTitle">Minimize</string>
@@ -274,6 +283,14 @@
 						<reference key="destination" ref="737003899"/>
 					</object>
 					<int key="connectionID">821</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">performClose:</string>
+						<reference key="source" ref="1014"/>
+						<reference key="destination" ref="585557057"/>
+					</object>
+					<int key="connectionID">828</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -366,6 +383,7 @@
 							<reference ref="1007187132"/>
 							<reference ref="603027761"/>
 							<reference ref="929662521"/>
+							<reference ref="585557057"/>
 						</array>
 						<reference key="parent" ref="563590241"/>
 					</object>
@@ -493,6 +511,11 @@
 						<reference key="object" ref="929662521"/>
 						<reference key="parent" ref="215431025"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">826</int>
+						<reference key="object" ref="585557057"/>
+						<reference key="parent" ref="215431025"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -526,14 +549,40 @@
 				<string key="818.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="819.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="824.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="826.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">825</int>
+			<int key="maxID">828</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes"/>
+		<object class="IBClassDescriber" key="IBDocument.Classes">
+			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">MainMenuDelegate</string>
+					<string key="superclassName">NSViewController</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="onNewStopwatchMenuClicked:">id</string>
+						<string key="onQuit:">NSMenuItem</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="onNewStopwatchMenuClicked:">
+							<string key="name">onNewStopwatchMenuClicked:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="onQuit:">
+							<string key="name">onQuit:</string>
+							<string key="candidateClassName">NSMenuItem</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/MainMenuDelegate.h</string>
+					</object>
+				</object>
+			</array>
+		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>

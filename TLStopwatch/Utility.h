@@ -16,6 +16,7 @@
 
 
 +(NSString*)timeIntervalToString:(NSTimeInterval)i;
++(void)timeIntervalToString:(NSTimeInterval)i hours:(NSString**)hours minutes:(NSString**)minutes seconds:(NSString**)seconds fraction:(NSString**)fraction;
 +(NSTimeInterval)stringToTimeInterval:(NSString*)__inp;
 +(NSDate*)UTCDate;
 
