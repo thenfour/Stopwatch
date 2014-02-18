@@ -1,0 +1,25 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Stopwatch", "Stopwatch.vcproj", "{EDE3C1BB-4A54-47C0-ABE2-6E7D4ABF517E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		ReadableListing|Win32 = ReadableListing|Win32
+		Release|Win32 = Release|Win32
+		ReleaseWithDebug|Win32 = ReleaseWithDebug|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EDE3C1BB-4A54-47C0-ABE2-6E7D4ABF517E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EDE3C1BB-4A54-47C0-ABE2-6E7D4ABF517E}.Debug|Win32.Build.0 = Debug|Win32
+		{EDE3C1BB-4A54-47C0-ABE2-6E7D4ABF517E}.ReadableListing|Win32.ActiveCfg = ReadableListing|Win32
+		{EDE3C1BB-4A54-47C0-ABE2-6E7D4ABF517E}.ReadableListing|Win32.Build.0 = ReadableListing|Win32
+		{EDE3C1BB-4A54-47C0-ABE2-6E7D4ABF517E}.Release|Win32.ActiveCfg = Release|Win32
+		{EDE3C1BB-4A54-47C0-ABE2-6E7D4ABF517E}.Release|Win32.Build.0 = Release|Win32
+		{EDE3C1BB-4A54-47C0-ABE2-6E7D4ABF517E}.ReleaseWithDebug|Win32.ActiveCfg = ReleaseWithDebug|Win32
+		{EDE3C1BB-4A54-47C0-ABE2-6E7D4ABF517E}.ReleaseWithDebug|Win32.Build.0 = ReleaseWithDebug|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
