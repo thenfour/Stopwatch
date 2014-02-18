@@ -1,0 +1,378 @@
+Microsoft (R) Macro Assembler Version 6.14.8444		    03/24/04 18:54:28
+stopwatch.asm						     Page 1 - 1
+
+
+				; #########################################################################
+
+				    .386
+				    .model flat, stdcall
+				    option casemap:none 
+
+				; #########################################################################
+				    include stopwatch.inc
+			      C ; Some definitions :)
+			      C 
+			      C 
+			      C LoadLibraryA PROTO :DWORD
+			      C GetProcAddress PROTO :DWORD,:DWORD
+			      C 
+ 00000028		      C WNDCLASS STRUCT
+ 00000000  00000000	      C   style             DWORD      ?
+ 00000004  00000000	      C   lpfnWndProc       DWORD      ?
+ 00000008  00000000	      C   cbClsExtra        DWORD      ?
+ 0000000C  00000000	      C   cbWndExtra        DWORD      ?
+ 00000010  00000000	      C   hInstance         DWORD      ?
+ 00000014  00000000	      C   hIcon             DWORD      ?
+ 00000018  00000000	      C   hCursor           DWORD      ?
+ 0000001C  00000000	      C   hbrBackground     DWORD      ?
+ 00000020  00000000	      C   lpszMenuName      DWORD      ?
+ 00000024  00000000	      C   lpszClassName     DWORD      ?
+			      C WNDCLASS ENDS
+			      C 
+ 00000024		      C TimerStruct STRUCT[4]
+ 00000000  00000000	      C     nTicks           DWORD    ? ;a tick is every time a WM_TIMER goes off...
+ 00000004  00		      C     bTimerSet        BYTE     ?
+ 00000008  00000000	      C     idMainDisplay    DWORD    ?
+ 0000000C  00000000	      C     idProgress       DWORD    ?
+ 00000010  00000000	      C     idRealTotal      DWORD    ?
+ 00000014  00000000	      C     idTotal          DWORD    ?
+ 00000018  00000000	      C     idOnOffIndicator DWORD    ?
+ 0000001C  00000000	      C     idPauseButton    DWORD    ?
+ 00000020  00000000	      C     idEnterTime      DWORD    ?
+			      C TimerStruct ENDS
+			      C 
+ = sizeof(TimerStruct)	      C TimerStructSize equ <sizeof(TimerStruct)>
+			      C 
+			      C MessageBoxA PROTO :DWORD,:DWORD,:DWORD,:DWORD
+ = MessageBoxA		      C MessageBox equ <MessageBoxA>
+			      C 
+			      C wsprintfA PROTO C :DWORD,:VARARG
+ = wsprintfA		      C wsprintf equ <wsprintfA>
+			      C 
+			      C GetMessageA PROTO :DWORD,:DWORD,:DWORD,:DWORD
+			      C TranslateMessage PROTO :DWORD
+			      C DispatchMessageA PROTO :DWORD
+			      C DefWindowProcA PROTO :DWORD,:DWORD,:DWORD,:DWORD
+			      C 
+			      C RegisterClassA PROTO :DWORD
+			      C 
+			      C CreateWindowExA PROTO :DWORD,:DWORD,:DWORD,:DWORD,:DWORD,:DWORD,:DWORD,:DWORD,:DWORD,:DWORD,:DWORD,:DWORD
+			      C 
+ 00000008		      C POINT STRUCT
+ 00000000  00000000	      C   x  DWORD ?
+ 00000004  00000000	      C   y  DWORD ?
+			      C POINT ENDS
+			      C 
+ 0000001C		      C MSG STRUCT
+ 00000000  00000000	      C   hwnd      DWORD      ?
+ 00000004  00000000	      C   message   DWORD      ?
+ 00000008  00000000	      C   wParam    DWORD      ?
+ 0000000C  00000000	      C   lParam    DWORD      ?
+ 00000010  00000000	      C   time      DWORD      ?
+ 00000014  00000000	      C   pt        POINT      <>
+	   00000000
+			      C MSG ENDS
+			      C 
+ = 00000002		      C WM_DESTROY                           equ 2h
+ = 00000010		      C WM_CLOSE                             equ 10h
+			      C 
+			      C PostQuitMessage PROTO :DWORD
+			      C DestroyWindow PROTO :DWORD
+			      C 
+			      C 
+				    includelib \masm32\lib\kernel32.lib
+				    includelib \masm32\lib\user32.lib
+				    includelib \masm32\lib\comctl32.lib
+				    includelib \masm32\lib\gdi32.lib
+				; #########################################################################
+
+ 00000000			.code
+
+ 00000000			start:
+				    ; locals:
+ = TimerStructSize		    Timer1 equ <TimerStructSize>
+ = TimerStructSize + TimerS	    Timer2 equ <TimerStructSize + TimerStructSize>
+   tructSize
+ = TimerStructSize + TimerS	    Msg equ <TimerStructSize + TimerStructSize + sizeof(MSG)>
+   tructSize + sizeof(MSG)
+
+ 00000000  C8 0064 00		    enter Msg, 0
+ 00000004  60			    pushad
+
+				    ; Register window class
+ 00000005  68 000001D7 R	    push offset g_WndClass
+ 0000000A  E8 00000000 E	    call RegisterClassA
+
+				    ; Create our window
+ 0000000F  33 C0		    xor eax, eax
+ 00000011  50			    push eax
+ 00000012  68 00400000		    push 0400000h
+ 00000017  50			    push eax
+ 00000018  50			    push eax
+ 00000019  68 000000F4		    push 244
+ 0000001E  68 000001BC		    push 444
+ 00000023  50			    push eax
+ 00000024  50			    push eax
+ 00000025  68 10CF0000		    push 10cf0000h
+ 0000002A  68 000001C5 R	    push offset g_szWindowCaption
+ 0000002F  68 000001C3 R	    push offset g_szClassName
+ 00000034  50			    push eax
+
+ 00000035  E8 00000000 E	    call CreateWindowExA
+
+				    ; Message loop
+ 0000003A			MessageLoop:
+ 0000003A  8D 55 1C		    lea edx, [ebp - Msg] ; call GetMessage
+ 0000003D  33 C0		    xor eax, eax
+ 0000003F  50			    push eax
+ 00000040  50			    push eax
+ 00000041  50			    push eax
+ 00000042  52			    push edx
+ 00000043  E8 00000000 E	    call GetMessageA
+ 00000048  85 C0		    test eax, eax
+ 0000004A  74 14		    jz ExitMessageLoop ; if GetMessage returns 0, end
+ 0000004C  8D 55 1C		    lea edx, [ebp - Msg]
+ 0000004F  52			    push edx
+ 00000050  E8 00000000 E	    call TranslateMessage
+ 00000055  8D 55 1C		    lea edx, [ebp - Msg]
+ 00000058  52			    push edx
+ 00000059  E8 00000000 E	    call DispatchMessageA
+ 0000005E  EB DA		    jmp MessageLoop
+
+ 00000060			ExitMessageLoop:
+
+ 00000060  61			    popad
+ 00000061  C9			    leave
+ 00000062  C3			    ret
+
+ 00000063			WndProc proc
+				    ;_hWnd$ = 8						; size = 4
+				    ;_uMsg$ = 12					; size = 4
+				    ;_wParam$ = 16					; size = 4
+				    ;_lParam$ = 20					; size = 4
+
+ 00000063  C8 0000 00		    enter 0, 0
+ 00000067  60			    pushad
+				    
+ 00000068  8B 55 0C		    mov edx, [ebp+12] ; uMsg
+ 0000006B  83 FA 02		    cmp edx, WM_DESTROY
+ 0000006E  75 09		    jne NotDestroy
+				        ; WM_DESTROY
+ 00000070  6A 00		    push 0
+ 00000072  E8 00000000 E	    call PostQuitMessage
+ 00000077  EB 20		    jmp EndOfMessageSwitch
+ 00000079			NotDestroy:
+ 00000079  83 FA 10		    cmp edx, WM_CLOSE
+ 0000007C  75 06		    jne NotClose
+				        ; WM_CLOSE
+ 0000007E  8B 55 08		    mov edx, [ebp+8]; hWnd
+ 00000081  52			    push edx
+ 00000082  EB 15		    jmp EndOfMessageSwitch
+ 00000084			NotClose:
+
+ 00000084  8B 55 14		    mov edx, [ebp+20]; lParam
+ 00000087  52			    push edx
+ 00000088  8B 55 10		    mov edx, [ebp+16]; wParam
+ 0000008B  52			    push edx
+ 0000008C  8B 55 0C		    mov edx, [ebp+12]; uMsg
+ 0000008F  52			    push edx
+ 00000090  8B 55 08		    mov edx, [ebp+8]; hWnd
+ 00000093  52			    push edx
+ 00000094  E8 00000000 E	    call DefWindowProcA
+ 00000099			EndOfMessageSwitch:
+ 00000099  61			    popad
+ 0000009A  C9			    leave
+ 0000009B  C3			    ret
+ 0000009C			WndProc endp
+
+ 0000009C 74 68 65 20 61	    g_szThing db "the address is: 0x%08x", 0
+	   64 64 72 65 73
+	   73 20 69 73 3A
+	   20 30 78 25 30
+	   38 78 00
+
+				    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ 000000B3 43 72 65 61 74	    g_szUser32FunctionNames db "CreateWindowExA", 0
+	   65 57 69 6E 64
+	   6F 77 45 78 41
+	   00
+ 000000C3  44 65 66 57 69	        db "DefWindowProcA", 0
+	   6E 64 6F 77 50
+	   72 6F 63 41 00
+ 000000D2  44 65 73 74 72	        db "DestroyWindow", 0
+	   6F 79 57 69 6E
+	   64 6F 77 00
+ 000000E0  44 69 73 70 61	        db "DispatchMessageA", 0
+	   74 63 68 4D 65
+	   73 73 61 67 65
+	   41 00
+ 000000F1  47 65 74 4D 65	        db "GetMessageA", 0
+	   73 73 61 67 65
+	   41 00
+ 000000FD  47 65 74 57 69	        db "GetWindowTextA", 0
+	   6E 64 6F 77 54
+	   65 78 74 41 00
+ 0000010C  49 6E 76 61 6C	        db "InvalidateRect", 0
+	   69 64 61 74 65
+	   52 65 63 74 00
+ 0000011B  50 6F 73 74 51	        db "PostQuitMessage", 0
+	   75 69 74 4D 65
+	   73 73 61 67 65
+	   00
+ 0000012B  52 65 67 69 73	        db "RegisterClassA", 0
+	   74 65 72 43 6C
+	   61 73 73 41 00
+ 0000013A  53 65 6E 64 4D	        db "SendMessageA", 0
+	   65 73 73 61 67
+	   65 41 00
+ 00000147  53 65 74 54 69	        db "SetTimer", 0
+	   6D 65 72 00
+ 00000150  53 65 74 57 69	        db "SetWindowPos", 0
+	   6E 64 6F 77 50
+	   6F 73 00
+ 0000015D  53 65 74 57 69	        db "SetWindowTextA", 0
+	   6E 64 6F 77 54
+	   65 78 74 41 00
+ 0000016C  54 72 61 6E 73	        db "TranslateMessage", 0
+	   6C 61 74 65 4D
+	   65 73 73 61 67
+	   65 00
+ 0000017D  77 73 70 72 69	        db "wsprintfA", 0
+	   6E 74 66 41 00
+
+ = 15				    g_nUser32Functions equ <15> ; macro
+ 00000187  0000000F [		    g_pUser32FunctionPointers DWORD g_nUser32Functions dup(?) ; array of function pointers
+	    00000000
+	   ]
+
+ 000001C3 5D 00			    g_szClassName db "]", 0
+ 000001C5 53 74 6F 70 77	    g_szWindowCaption db "Stopwatch", 0
+	   61 74 63 68 00
+
+ 000001CF 00000000		    g_pTimer1 DWORD ?
+ 000001D3 00000000		    g_pTimer2 DWORD ?
+
+				    ; WNDCLASS struct
+ 000001D7 00000003		    g_WndClass  DWORD 3 ; style CS_VREDRAW | CS_HREDRAW
+ 000001DB  00000063 R		                DWORD offset WndProc
+ 000001DF  00000000		                DWORD 0
+ 000001E3  00000000		                DWORD 0
+ 000001E7  00400000		                DWORD 400000h
+ 000001EB  00000000		                DWORD 0
+ 000001EF  00000000		                DWORD 0
+ 000001F3  00000010		                DWORD 16
+ 000001F7  00000000		                DWORD 0
+ 000001FB  000001C3 R		                DWORD offset g_szClassName
+
+				end start
+Microsoft (R) Macro Assembler Version 6.14.8444		    03/24/04 18:54:28
+stopwatch.asm						     Symbols 2 - 1
+
+
+
+
+Structures and Unions:
+
+                N a m e                  Size
+                                         Offset      Type
+
+MSG  . . . . . . . . . . . . . .	 0000001C
+  hwnd . . . . . . . . . . . . .	 00000000	 DWord
+  message  . . . . . . . . . . .	 00000004	 DWord
+  wParam . . . . . . . . . . . .	 00000008	 DWord
+  lParam . . . . . . . . . . . .	 0000000C	 DWord
+  time . . . . . . . . . . . . .	 00000010	 DWord
+  pt . . . . . . . . . . . . . .	 00000014	 QWord
+POINT  . . . . . . . . . . . . .	 00000008
+  x  . . . . . . . . . . . . . .	 00000000	 DWord
+  y  . . . . . . . . . . . . . .	 00000004	 DWord
+TimerStruct  . . . . . . . . . .	 00000024
+  nTicks . . . . . . . . . . . .	 00000000	 DWord
+  bTimerSet  . . . . . . . . . .	 00000004	 Byte
+  idMainDisplay  . . . . . . . .	 00000008	 DWord
+  idProgress . . . . . . . . . .	 0000000C	 DWord
+  idRealTotal  . . . . . . . . .	 00000010	 DWord
+  idTotal  . . . . . . . . . . .	 00000014	 DWord
+  idOnOffIndicator . . . . . . .	 00000018	 DWord
+  idPauseButton  . . . . . . . .	 0000001C	 DWord
+  idEnterTime  . . . . . . . . .	 00000020	 DWord
+WNDCLASS . . . . . . . . . . . .	 00000028
+  style  . . . . . . . . . . . .	 00000000	 DWord
+  lpfnWndProc  . . . . . . . . .	 00000004	 DWord
+  cbClsExtra . . . . . . . . . .	 00000008	 DWord
+  cbWndExtra . . . . . . . . . .	 0000000C	 DWord
+  hInstance  . . . . . . . . . .	 00000010	 DWord
+  hIcon  . . . . . . . . . . . .	 00000014	 DWord
+  hCursor  . . . . . . . . . . .	 00000018	 DWord
+  hbrBackground  . . . . . . . .	 0000001C	 DWord
+  lpszMenuName . . . . . . . . .	 00000020	 DWord
+  lpszClassName  . . . . . . . .	 00000024	 DWord
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000000 DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000001FF DWord	  Public  'CODE'	
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+CreateWindowExA  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DefWindowProcA . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DestroyWindow  . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+DispatchMessageA . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetMessageA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+GetProcAddress . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+LoadLibraryA . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+MessageBoxA  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+PostQuitMessage  . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+RegisterClassA . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+TranslateMessage . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+WndProc  . . . . . . . . . . . .	P Near	 00000063 _TEXT	Length= 00000039 Public STDCALL
+  NotDestroy . . . . . . . . . .	L Near	 00000079 _TEXT	
+  NotClose . . . . . . . . . . .	L Near	 00000084 _TEXT	
+  EndOfMessageSwitch . . . . . .	L Near	 00000099 _TEXT	
+wsprintfA  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External C
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000003h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+ExitMessageLoop  . . . . . . . .	L Near	 00000060 _TEXT	
+MessageBox . . . . . . . . . . .	Text   	 MessageBoxA
+MessageLoop  . . . . . . . . . .	L Near	 0000003A _TEXT	
+Msg  . . . . . . . . . . . . . .	Text   	 TimerStructSize + TimerStructSize + sizeof(MSG)
+Timer1 . . . . . . . . . . . . .	Text   	 TimerStructSize
+Timer2 . . . . . . . . . . . . .	Text   	 TimerStructSize + TimerStructSize
+TimerStructSize  . . . . . . . .	Text   	 sizeof(TimerStruct)
+WM_CLOSE . . . . . . . . . . . .	Number	 00000010h   
+WM_DESTROY . . . . . . . . . . .	Number	 00000002h   
+g_WndClass . . . . . . . . . . .	DWord	 000001D7 _TEXT	
+g_nUser32Functions . . . . . . .	Text   	 15
+g_pTimer1  . . . . . . . . . . .	DWord	 000001CF _TEXT	
+g_pTimer2  . . . . . . . . . . .	DWord	 000001D3 _TEXT	
+g_pUser32FunctionPointers  . . .	DWord	 00000187 _TEXT	
+g_szClassName  . . . . . . . . .	Byte	 000001C3 _TEXT	
+g_szThing  . . . . . . . . . . .	Byte	 0000009C _TEXT	
+g_szUser32FunctionNames  . . . .	Byte	 000000B3 _TEXT	
+g_szWindowCaption  . . . . . . .	Byte	 000001C5 _TEXT	
+start  . . . . . . . . . . . . .	L Near	 00000000 _TEXT	Public STDCALL
+wsprintf . . . . . . . . . . . .	Text   	 wsprintfA
+
+	   0 Warnings
+	   0 Errors
